@@ -11,7 +11,7 @@ Match and ip and user agent controlling devices authorized to login
 $this->load->model('device_authorization');
 ```
 
-Add hook with [set_hook()](http://benedmunds.com/ion_auth/#set_hook "set_hook()")  after function login 
+Add hook with [set_hook()](http://benedmunds.com/ion_auth/#set_hook "set_hook()") before function login 
 ```php
 $this->ion_auth->set_hook(
 	'post_login', 
