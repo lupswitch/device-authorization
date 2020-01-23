@@ -4,7 +4,8 @@
 Match and ip and user agent controlling devices authorized to login
 
 ## How to use
-#### Install and configure Ion Auth correctly
+#### - Install and configure Ion Auth correctly
+#### - Copy the files from the respective folders and paste in the project
 [Loading model](https://codeigniter.com/user_guide/general/models.html "Loading model") with functions 
 ```php
 $this->load->model('device_authorization');
