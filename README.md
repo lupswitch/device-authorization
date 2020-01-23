@@ -4,8 +4,11 @@
 Match and ip and user agent controlling devices authorized to login
 
 ## How to use
-#### - Install and configure Ion Auth correctly
-#### - Copy the files from the respective folders and paste in the project
+#### Install and configure Ion Auth correctly
+#### Copy the files from the respective folders and paste in the project
+
+O `$config['use_ci_email'] = TRUE;` must be set to TRUE and configured correctly
+
 [Loading model](https://codeigniter.com/user_guide/general/models.html "Loading model") with functions 
 ```php
 $this->load->model('device_authorization');
@@ -41,7 +44,7 @@ public function device_authorization($code = NULL)
      // If the code is valid then display the password reset form
      if ($authorization) {
          $this->session->set_flashdata('message', $this->ion_auth->messages());
-         redirect('auth', 'refresh');
+         redirect('auth/login', 'refresh');
      } else {
        // If the code is invalid then send them back to the login page
       $this->session->set_flashdata('message', $this->ion_auth->errors());
