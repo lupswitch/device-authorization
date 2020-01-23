@@ -22,7 +22,7 @@ $this->ion_auth->set_hook(
 ```
 
 
-Add to your controller Auth
+Add to your controller Auth to receive email confirmations
 ```php
 /**
 * Device authorization -  match in ip and user agent

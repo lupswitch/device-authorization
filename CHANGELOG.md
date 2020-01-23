@@ -1,5 +1,5 @@
-# Será populado após a liberação do BETA
+# Change log
 
 ## [v0.0.0]
-> Mês DATA, ANO
-- Alteração
+>  
+- 
