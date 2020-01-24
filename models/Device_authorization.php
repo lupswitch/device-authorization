@@ -208,7 +208,7 @@ class Device_authorization extends Ion_auth_model
     /**
      * Receives the device authorization request
      *
-     * @param  int|string $code 
+     * @param  string $code 
      *
      * @return bool
      * @author Matheus
@@ -241,12 +241,12 @@ class Device_authorization extends Ion_auth_model
     }
 
     /**
-     * Authorize device via email
+     * Authorize device via email - Update table device_authorization
      *
-     * @param   string $code
+     * @param  string $code
      *
-     * @return  bool|int
-     * @author  Matheus
+     * @return bool|int
+     * @author Matheus
      */
     public function activate_device_authorization($code)
     {
