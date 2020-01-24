@@ -2,6 +2,9 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
+/**
+ * Class authorizaton device
+ */
 class Device_authorization extends Ion_auth_model
 {
     /**
@@ -11,6 +14,40 @@ class Device_authorization extends Ion_auth_model
      */
     protected $db;
 
+    /**
+     * Search result if there is already a device request 
+     *
+     * @var mixed
+     */
+    protected $result;
+
+    /**
+     * The User-Agent request header
+     *
+     * @var string
+     */
+    protected $user_agent;
+
+    /**
+     * Request ip address
+     *
+     * @var string
+     */
+    protected $ip_address;
+
+    /**
+     * Requisition data
+     *
+     * @var array
+     */
+    protected $data = [];
+
+
+    /**
+     * __construct
+     * 
+     * @author Ben Edmunds
+     */
     public function __construct()
     {
         // By default, use CI's db that should be already loaded
@@ -19,6 +56,11 @@ class Device_authorization extends Ion_auth_model
         $this->config->load('ion_auth', TRUE);
     }
 
+    /**
+     * __get
+     * 
+     * @author Ben Edmunds
+     */
     public function __get($var)
     {
         return get_instance()->$var;
@@ -29,18 +71,25 @@ class Device_authorization extends Ion_auth_model
      * May prove useful for debugging
      *
      * @return object
+     * @author Ben Edmunds
      */
     public function db()
     {
         return $this->db;
     }
 
+    /**
+     * Check device - Initial check that is called by the controller
+     * 
+     * @param string $identity
+     * @return void|bool
+     */
     public function verify_device($identity)
     {
+        
+        $this->result = $this->verify_authorization($identity);
 
-        $result = $this->verify_authorization($identity);
-
-        if (!is_numeric($result)) {
+        if (!is_numeric($this->result)) {
 
             if ($this->increase_device_authorization($identity)) {
                 $this->ion_auth_model->set_error('device_confirmation_sent');
@@ -49,7 +98,7 @@ class Device_authorization extends Ion_auth_model
             }
         } else {
 
-            if ($result != 1) {
+            if ($this->result != 1) {
                 $this->ion_auth_model->set_error('login_unsuccessful_not_allowed');
                 redirect('auth/login');
                 // return FALSE;     
@@ -64,10 +113,10 @@ class Device_authorization extends Ion_auth_model
     /**
      * Verify if device is allowed
      *
-     * @param    string $identity
+     * @param  string $identity
      *
-     * @return    bool|array
-     * @author    Matheus
+     * @return bool|array
+     * @author Matheus
      * 
      */
     public function verify_authorization($identity)
@@ -78,20 +127,18 @@ class Device_authorization extends Ion_auth_model
 
         $this->load->library('user_agent');
 
-        $user_agent = $this->agent->browser() . ' on ' . $this->agent->platform();
-        $ip_address = $this->input->ip_address();
+        $this->user_agent = $this->agent->browser() . ' on ' . $this->agent->platform();
+        $this->ip_address = $this->input->ip_address();
 
         $query = $this->db->select('*')
             ->where('login', $identity)
-            ->where('user_agent', $user_agent)
-            ->where('ip_address', $ip_address)
+            ->where('user_agent', $this->user_agent)
+            ->where('ip_address', $this->ip_address)
             ->limit(1)
             ->get('device_authorization');
 
         return isset($query->row()->active) ? $query->row()->active : FALSE;
     }
-
-
 
     /**
      * Request a device authorization
@@ -113,7 +160,7 @@ class Device_authorization extends Ion_auth_model
         // Generate random token: smaller size because it will be in the URL
         $token = $this->ion_auth_model->_generate_selector_validator_couple(20, 80);
 
-        $data = [
+        $this->data = [
             'user_agent'         => $this->agent->browser() . ' on ' . $this->agent->platform(),
             'ip_address'         => $this->input->ip_address(),
             'device_selector'    => $token->selector,
@@ -122,21 +169,21 @@ class Device_authorization extends Ion_auth_model
             'time'               => time(),
         ];
 
-        $this->db->insert('device_authorization', $data);
+        $this->db->insert('device_authorization', $this->data);
 
         if ($this->db->affected_rows() === 1) {
 
-            $data += [
+            $this->data += [
                 'code' => $token->user_code
             ];
 
             $user = $this->get_user_by_code_device_authorization($token->user_code);
 
             if (!$this->config->item('use_ci_email', 'ion_auth')) {
-                return $data;
+                return $this->data;
             } else {
 
-                $message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'device_authorization.tpl.php', $data, TRUE);
+                $message = $this->load->view($this->config->item('email_templates', 'ion_auth') . 'device_authorization.tpl.php', $this->data, TRUE);
                 $this->email->clear();
                 $this->email->from($this->config->item('admin_email', 'ion_auth'), $this->config->item('site_title', 'ion_auth'));
 
