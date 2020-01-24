@@ -18,13 +18,11 @@ $this->load->model('device_authorization');
 
 Add hook with [set_hook()](http://benedmunds.com/ion_auth/#set_hook "set_hook()") before function login in Auth Controller
 ```php
-$this->ion_auth->set_hook(
-	'post_login', 
-	'verify_device_authorization', 
-	$this->device_authorization, 
-	$this->device_authorization->verify_device($this->input->post('identity')), 
-	$this->input->post('identity')
-	);
+$this->ion_auth->set_hook('post_login',
+'verify_device_authorization', 
+$this->device_authorization, 
+'verify_device', 
+array($this->input->post('identity')));
 ```
 
 
