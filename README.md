@@ -7,7 +7,7 @@ Match and ip and user agent controlling devices authorized to login
 #### Install and configure Ion Auth correctly
 #### Copy the files from the respective folders and paste in the project
 
-O `$config['use_ci_email'] = TRUE;` must be set to TRUE and configured correctly
+O `$config['use_ci_email'] = TRUE;` must be set to `TRUE` and configured correctly
 
 [Loading model](https://codeigniter.com/user_guide/general/models.html "Loading model") with functions 
 ```php
