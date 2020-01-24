@@ -7,16 +7,16 @@ Match and ip and user agent controlling devices authorized to login
 #### Install and configure Ion Auth correctly
 #### Copy the files from the respective folders and paste in the project
 
-- O `$config['use_ci_email'] = TRUE;` must be set to `TRUE` and configured correctly
+O `$config['use_ci_email'] = TRUE;` must be set to `TRUE` and configured correctly
 
-- Add to your [database](https://github.com/matheuscastroweb/device-authorization/blob/master/sql/device_authorization.sql "database") 
+Add to your [database](https://github.com/matheuscastroweb/device-authorization/blob/master/sql/device_authorization.sql "database") 
 
-- [Loading model](https://codeigniter.com/user_guide/general/models.html "Loading model") with functions 
+[Loading model](https://codeigniter.com/user_guide/general/models.html "Loading model") with functions 
 ```php
 $this->load->model('device_authorization');
 ```
 
-- Add hook with [set_hook()](http://benedmunds.com/ion_auth/#set_hook "set_hook()") before function login 
+Add hook with [set_hook()](http://benedmunds.com/ion_auth/#set_hook "set_hook()") before function login 
 ```php
 $this->ion_auth->set_hook(
 	'post_login', 
@@ -28,7 +28,7 @@ $this->ion_auth->set_hook(
 ```
 
 
-- Add to your controller Auth to receive email confirmations
+Add to your controller Auth to receive email confirmations
 ```php
 /**
 * Device authorization -  match in ip and user agent
