@@ -86,22 +86,25 @@ class Device_authorization extends Ion_auth_model
      */
     public function verify_device($identity)
     {
-        
         $this->result = $this->verify_authorization($identity);
 
         if (!is_numeric($this->result)) {
 
             if ($this->increase_device_authorization($identity)) {
+
+                $this->ion_auth->logout();
                 $this->ion_auth_model->set_error('device_confirmation_sent');
-                redirect('auth/login');
-                // return FALSE;
+
+                return FALSE;
             }
         } else {
 
             if ($this->result != 1) {
+
+                $this->ion_auth->logout();
                 $this->ion_auth_model->set_error('login_unsuccessful_not_allowed');
-                redirect('auth/login');
-                // return FALSE;     
+
+                return FALSE;
             } else {
                 $this->ion_auth_model->set_message('login_successful');
                 return TRUE;
